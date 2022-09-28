@@ -1,0 +1,39 @@
+!
+crypto ikev2 proposal management-ikev2-proposal
+ encryption aes-cbc-256
+ integrity sha384
+ group 20
+crypto ikev2 proposal production-cert-ikev2-proposal
+encryption aes-gcm-256
+ prf sha384
+ group 20
+!
+no crypto ikev2 policy default
+!
+crypto ikev2 policy global-ikev2-policy
+ match fvrf outside
+ proposal management-ikev2-proposal
+ proposal production-cert-ikev2-proposal
+!
+crypto ikev2 keyring management-ikev2-keyring
+ peer {{ HUBNAME }}
+  address {{ HUB_BLK_IP }}
+  pre-shared-key {{ PRESHAREDKEY }}
+ peer {{ HUBNAME_BKUP }}
+  address {{ HUB_BLK_IP_BKUP }}
+  pre-shared-key {{ PRESHAREDKEY }}
+!
+!
+crypto ikev2 profile management-ikev2-profile
+ match fvrf outside
+ match identity remote address 0.0.0.0
+ identity local address {{ LOCAL_BLK_IP }}
+ authentication remote pre-share
+ authentication local pre-share
+ keyring local management-ikev2-keyring
+ ivrf management
+!
+!
+crypto ikev2 dpd 10 10 periodic
+!
+!
