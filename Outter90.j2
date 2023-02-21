@@ -1,0 +1,84 @@
+version 16.9
+service timestamps debug datetime msec
+service timestamps log datetime msec
+platform qfp utilization monitor load 80
+platform punt-keepalive disable-kernel-core
+!
+hostname labisr1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition Mgmt-intf
+ rd 41:41
+ route-target export 41:41
+ route-target import 41:41
+ !
+ address-family ipv4
+  route-target export 41:41
+  route-target import 41:41
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+!
+aaa new-model
+!
+!
+aaa group server tacacs+ ISE_GROUP
+ server name ISE
+!
+aaa authentication login AAA group ISE_GROUP local
+aaa authentication enable default group ISE_GROUP enable
+aaa authorization config-commands
+aaa authorization exec AAA group ISE_GROUP local 
+aaa authorization commands 0 AAA group ISE_GROUP local 
+aaa authorization commands 1 AAA group ISE_GROUP local 
+aaa authorization commands 7 AAA group ISE_GROUP local 
+aaa authorization commands 15 AAA group ISE_GROUP local 
+aaa accounting commands 0 AAA start-stop group ISE_GROUP
+aaa accounting commands 1 AAA start-stop group ISE_GROUP
+aaa accounting commands 7 AAA start-stop group ISE_GROUP
+aaa accounting commands 15 AAA start-stop group ISE_GROUP
+!
+!
+!
+!
+!
+!
+aaa session-id common
+clock timezone MST -7 0
+clock summer-time MST recurring
+!
+!
+!
+!
+!
+!
+!
+ip domain name {{ item.HOSTNAME }}
+!
+!
+!
+login on-success log
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+! 
+! 
+! 
+! 
+!
+multilink bundle-name authenticated
+!
+!
+password encryption aes
+!
+!
