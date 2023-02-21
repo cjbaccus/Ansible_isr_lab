@@ -1,0 +1,57 @@
+---
+# Playbook to setup folder structures for new project
+#
+
+- name: Prompt for Project Foldername
+  hosts: localhost
+  vars:
+          - directory: "/home/cjbaccus/Ansible/"
+  
+  vars_prompt:
+
+          - name: project
+            prompt: Name of the project
+            private: no
+  tasks:
+          - name: Create ISR_Gen vars Directory
+            file:
+                    path: "{{ directory }}/{{ project }}/roles/ISR/vars"
+                    state: directory
+            delegate_to: localhost
+          
+          - name: Create ISR_Gen templates Directory
+            file:
+                    path: "{{ directory }}/{{ project }}/roles/ISR/templates"
+                    state: directory
+            delegate_to: localhost
+
+          - name: Create ISR_Gen tasks Directory
+            file:
+                    path: "{{ directory }}/{{ project }}/roles/ISR/tasks"
+                    state: directory
+            delegate_to: localhost
+
+          - name: Copy sample ISR90.j2 file
+            copy:
+                    src: "{{ directory }}Outter90.j2"
+                    dest: "{{ directory }}/{{ project }}/roles/ISR/templates/ISR90.j2"
+            delegate_to: localhost
+
+          - name: Copy sample tasks main.yml file
+            copy:
+                    src: "{{ directory }}tasks_main.yml"
+                    dest: "{{ directory }}/{{ project }}/roles/ISR/tasks/main.yml"
+            delegate_to: localhost
+
+
+          - name: Copy sample vars main.yml file
+            copy:
+                    src: "{{ directory }}vars_main.yml"
+                    dest: "{{ directory }}/{{ project }}/roles/ISR/vars/main.yml"
+            delegate_to: localhost
+
+          - name: Copy sample site.yml file
+            copy:
+                    src: "{{ directory }}site.yml"
+                    dest: "{{ directory }}/{{ project }}/site.yml"
+            delegate_to: localhost
